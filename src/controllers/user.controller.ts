@@ -23,12 +23,14 @@ export const CreateUser = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { email, cpf, name, dn, telephone, password } = req.body as User;
+    const { email, cpf, name, dn, role, telephone, password } =
+      req.body as User;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = {
       email,
       cpf,
       name,
+      role,
       dn,
       telephone,
       password: hashedPassword,
