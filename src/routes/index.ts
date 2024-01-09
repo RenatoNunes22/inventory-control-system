@@ -1,27 +1,38 @@
 import express from "express";
-import {
-  AllProducts,
-  CreateProduct,
-  productSold,
-} from "../controllers/product.controller";
+
 import {
   AllUser,
   CreateUser,
   LonginUser,
+  UpadtaUser,
 } from "../controllers/user.controller";
 import { checkToken } from "../middlewares/checkToken";
+import {
+  AllDevice,
+  CreateDevice,
+  deviceSold,
+} from "../controllers/device.controller";
+import {
+  CreateAccessories,
+  accessoriesSold,
+} from "../controllers/accessories.controller";
 
 const router = express.Router();
 
 //Rotas get
-router.get("/products");
 router.get("/users", checkToken, AllUser);
-router.get("/products", checkToken, AllProducts);
+router.get("/devices", checkToken, AllDevice);
+router.get("/accessories", checkToken, AllDevice);
 //Rotas post
-router.post("/product", CreateProduct);
+router.post("/device", CreateDevice);
+router.post("/accessories", CreateAccessories);
 router.post("/users", CreateUser);
 router.post("/login", LonginUser);
 //Rotas delete
-router.delete("/sold/:id", productSold);
+router.delete("/deviceSold/:id", deviceSold); //nome do acessorio-nomedocliente (quantidade no corpo da requisição)
+//Route put
+router.put("/deviceSold/:id", deviceSold); //nome do acessorio-nomedocliente (quantidade no corpo da requisição)
+router.put("/accessoriesSold/:id", accessoriesSold); //nome do acessorio-nomedocliente (quantidade no corpo da requisição)
+router.put("/user/:id", UpadtaUser);
 
 export default router;

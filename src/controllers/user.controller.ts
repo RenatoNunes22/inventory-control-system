@@ -23,16 +23,16 @@ export const CreateUser = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { email, cpf, name, dn, role, telephone, password } =
+    const { email, cpf, name, dn, telephone, role, password } =
       req.body as User;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = {
       email,
       cpf,
       name,
-      role,
       dn,
       telephone,
+      role,
       password: hashedPassword,
     };
     const token = jwt.sign({ user }, JWT_SECRET, {
@@ -73,6 +73,20 @@ export const AllUser = async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     console.error("Erro ao buscar usuário", error);
     res.status(500).json({ error: "Erro interno ao buscar usuários" });
+  }
+};
+
+export const UpadtaUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    await dbClient
+      .db(DB_NAME)
+      .collection("users")
+      .findOneAndUpdate({ cpf: id }, { $set: req.body });
+  } catch (error) {
+    console.error("Erro ao atualizar usuário", error);
+    res.status(500).json({ error: "Erro interno ao atualizar usuário" });
   }
 };
 

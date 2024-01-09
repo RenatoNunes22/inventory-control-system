@@ -1,9 +1,8 @@
-export interface User {
+export interface Client {
   email: string;
   cpf: string;
   name: string;
   dn: string;
-  role: number;
   telephone: string;
-  password: string;
+  products: string[];
 }
