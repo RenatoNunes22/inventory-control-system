@@ -3,6 +3,7 @@ import { dbClient } from "../db";
 import dotenv from "dotenv";
 import { Device } from "../models/deviceModel";
 import { existClient } from "./client.controller";
+import { SoldDevice } from "../models/soldDevice";
 
 dotenv.config();
 
@@ -75,51 +76,58 @@ export const DeleteDevice = async (req: Request, res: Response) => {
 
 export const deviceSold = async (req: Request, res: Response) => {
   const { id } = req.params;
-
-  const splitResult = id.split("-");
+  const { soldValue, seriesNumber, expenses, fees, formPayment, client } =
+    req.body as SoldDevice;
 
   try {
-    if (splitResult.length === 2) {
-      const seriesNumber = splitResult[0];
-      const client = splitResult[1];
-
-      const sold = await dbClient
-        .db(DB_NAME)
-        .collection("devices")
-        .aggregate([
-          {
-            $match: {
-              seriesNumber: seriesNumber,
-            },
+    const sold = await dbClient
+      .db(DB_NAME)
+      .collection("devices")
+      .aggregate([
+        {
+          $match: {
+            seriesNumber: id,
           },
-        ])
-        .toArray();
+        },
+      ])
+      .toArray();
 
-      if (await existClient(client)) {
-        const clientResult = await existClient(client);
-        clientResult[0].products.push(sold[0].name);
-        await dbClient
-          .db(DB_NAME)
-          .collection("clients")
-          .findOneAndUpdate({ cpf: client }, { $set: clientResult[0] });
-      }
-
+    if (await existClient(client)) {
+      const clientResult = await existClient(client);
+      clientResult[0].products.push(sold[0].name);
       await dbClient
         .db(DB_NAME)
-        .collection("sold")
-        .insertOne({
-          ...sold[0],
-          soldAt: new Date().toISOString(),
-          client: client,
-        });
-
-      await dbClient
-        .db(DB_NAME)
-        .collection("devices")
-        .deleteMany({ seriesNumber: id });
-
-      res.status(200).send("Aparelho vendido com sucesso!");
+        .collection("clients")
+        .findOneAndUpdate({ cpf: client }, { $set: clientResult[0] });
     }
+
+    console.log(sold[0].value);
+    console.log(soldValue);
+    console.log(expenses);
+    console.log(fees);
+
+    await dbClient
+      .db(DB_NAME)
+      .collection("sold")
+      .insertOne({
+        name: sold[0].name,
+        soldValue: soldValue,
+        seriesNumber: seriesNumber,
+        expenses: expenses,
+        fees: fees,
+        formPayment: formPayment,
+        profit: soldValue - sold[0].value - expenses - fees,
+        createdAt: sold[0].createdAt,
+        soldAt: new Date().toISOString(),
+        client: client,
+      });
+
+    await dbClient
+      .db(DB_NAME)
+      .collection("devices")
+      .deleteMany({ seriesNumber: id });
+
+    res.status(200).send("Aparelho vendido com sucesso!");
   } catch (error) {
     console.error("Erro ao deletar aparelho vendido", error);
     res.status(500).json({ error: "Erro interno ao deletar aparelho vendido" });
