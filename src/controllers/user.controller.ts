@@ -109,7 +109,7 @@ export const LonginUser = async (
       });
     }
 
-    res.status(200).json(user);
+    res.status(200).json({ token: user[0].token });
   } catch (error) {
     console.error("Erro ao realizar login:", error);
     res.status(500).json({ error: "Erro interno do servidor" });
