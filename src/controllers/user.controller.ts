@@ -99,17 +99,13 @@ export const LonginUser = async (
     const { email, password } = req.body;
     const user = await checkUser(email);
 
-    if (!user) {
-      res.status(401).json({ error: "Usuário não encontrado" });
-    } else {
-      await bcrypt.compare(password, user[0].password).then((result) => {
-        if (!result) {
-          res.status(401).json({ error: "Credenciais inválidas" });
-        }
-      });
-    }
-
-    res.status(200).json({ token: user[0].token });
+    await bcrypt.compare(password, user[0].password).then((result) => {
+      if (!result) {
+        res.status(401).json({ error: "Credenciais inválidas" });
+      } else {
+        res.status(200).json({ role: user[0].role, token: user[0].token });
+      }
+    });
   } catch (error) {
     console.error("Erro ao realizar login:", error);
     res.status(500).json({ error: "Erro interno do servidor" });
