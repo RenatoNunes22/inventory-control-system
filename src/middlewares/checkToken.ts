@@ -18,7 +18,7 @@ export const checkToken = (req: any, res: any, next: any) => {
 
   if (!token) {
     return res.status(401).send("Token não fornecido.");
-  }
+  } 
 
   jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
     if (err) {

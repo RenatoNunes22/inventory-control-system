@@ -11,21 +11,24 @@ import {
   AllDevice,
   CreateDevice,
   GetDevice,
+  UpdateDevice,
   deviceSold,
 } from "../controllers/device.controller";
 import {
   AllAccessories,
   CreateAccessories,
+  GetAccessories,
   accessoriesSold,
 } from "../controllers/accessories.controller";
 
 const router = express.Router();
 
 //Rotas get
-router.get("/users", checkToken, AllUser);
-router.get("/devices", checkToken, AllDevice);
-router.get("/accessories", checkToken, AllAccessories);
-router.get("/devices/:id", checkToken, GetDevice);
+router.get("/users", AllUser);
+router.get("/devices", AllDevice);
+router.get("/accessories", AllAccessories);
+router.get("/accessories/:id", GetAccessories);
+router.get("/devices/:id", GetDevice);
 //Rotas post
 router.post("/device", CreateDevice);
 router.post("/accessories", CreateAccessories);
@@ -34,6 +37,7 @@ router.post("/login", LonginUser);
 //Rotas delete
 router.delete("/deviceSold/:id", deviceSold); //nome do acessorio-nomedocliente (quantidade no corpo da requisição)
 //Route put
+router.put("/devices/:id", UpdateDevice);
 router.put("/deviceSold/:id", deviceSold); //nome do acessorio-nomedocliente (quantidade no corpo da requisição)
 router.put("/accessoriesSold/:id", accessoriesSold); //nome do acessorio-nomedocliente (quantidade no corpo da requisição)
 router.put("/user/:id", UpadtaUser);

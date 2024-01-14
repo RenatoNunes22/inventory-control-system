@@ -151,6 +151,42 @@ export const deviceSold = async (req: Request, res: Response) => {
   }
 };
 
+export const UpdateDevice = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const {
+    name,
+    value,
+    type,
+    seriesNumber,
+    status,
+    stateBattery,
+    maxDiscountAmout,
+    createdAt,
+  } = req.body;
+
+  try {
+    const device = {
+      name,
+      value,
+      type,
+      seriesNumber,
+      status,
+      stateBattery,
+      maxDiscountAmout,
+      createdAt,
+    };
+
+    await dbClient
+      .db(DB_NAME)
+      .collection("devices")
+      .findOneAndUpdate({ seriesNumber: id }, { $set: device });
+    res.status(200).send("Aparelho atualizado com sucesso!");
+  } catch (error) {
+    console.error("Erro ao atualizar aparelho", error);
+    res.status(500).json({ error: "Erro interno ao atualizar aparelho" });
+  }
+}
+
 export const AllDevice = async (req: Request, res: Response): Promise<void> => {
   try {
     const users = await dbClient

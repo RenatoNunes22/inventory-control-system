@@ -45,6 +45,27 @@ export const CreateAccessories = async (
   }
 };
 
+export const GetAccessories = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const device = await dbClient
+      .db(DB_NAME)
+      .collection("accessories")
+      .aggregate([
+        {
+          $match: {
+            name: id,
+          },
+        },
+      ])
+      .toArray();
+    res.status(200).json(device);
+  } catch (error) {
+    console.error("Erro ao encontrar acessorio", error);
+    res.status(500).json({ error: "Erro interno ao encontrar acessorio" });
+  }
+};
+
 export const DeleteAccessories = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -54,8 +75,8 @@ export const DeleteAccessories = async (req: Request, res: Response) => {
       .collection("accessories")
       .deleteMany({ seriesNumber: id });
   } catch (error) {
-    console.error("Erro ao deletar aparelho", error);
-    res.status(500).json({ error: "Erro interno ao deletar aparelho" });
+    console.error("Erro ao deletar acessorio", error);
+    res.status(500).json({ error: "Erro interno ao deletar acessorio" });
   }
 };
 
