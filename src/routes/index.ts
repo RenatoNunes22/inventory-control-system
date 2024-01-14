@@ -10,9 +10,11 @@ import { checkToken } from "../middlewares/checkToken";
 import {
   AllDevice,
   CreateDevice,
+  GetDevice,
   deviceSold,
 } from "../controllers/device.controller";
 import {
+  AllAccessories,
   CreateAccessories,
   accessoriesSold,
 } from "../controllers/accessories.controller";
@@ -22,7 +24,8 @@ const router = express.Router();
 //Rotas get
 router.get("/users", checkToken, AllUser);
 router.get("/devices", checkToken, AllDevice);
-router.get("/accessories", checkToken, AllDevice);
+router.get("/accessories", checkToken, AllAccessories);
+router.get("/devices/:id", checkToken, GetDevice);
 //Rotas post
 router.post("/device", CreateDevice);
 router.post("/accessories", CreateAccessories);

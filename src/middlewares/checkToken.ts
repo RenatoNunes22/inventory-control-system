@@ -11,7 +11,10 @@ if (!JWT_SECRET) {
 
 //Middleware para verificar se o token é válido
 export const checkToken = (req: any, res: any, next: any) => {
-  const token = req.headers["authorization"];
+  const CompleteToken = req.headers.authorization.split(" ")[1];
+
+  const Removetoken = CompleteToken.slice(1);
+  const token = Removetoken.slice(0, -1);
 
   if (!token) {
     return res.status(401).send("Token não fornecido.");

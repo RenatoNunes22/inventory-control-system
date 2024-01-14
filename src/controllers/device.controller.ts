@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { Device } from "../models/deviceModel";
 import { existClient } from "./client.controller";
 import { SoldDevice } from "../models/soldDevice";
+import { formatterData } from "../utils/formatterData";
 
 dotenv.config();
 
@@ -60,6 +61,27 @@ export const CreateDevice = async (
   }
 };
 
+export const GetDevice = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const device = await dbClient
+      .db(DB_NAME)
+      .collection("devices")
+      .aggregate([
+        {
+          $match: {
+            seriesNumber: id,
+          },
+        },
+      ])
+      .toArray();
+    res.status(200).json(device);
+  } catch (error) {
+    console.error("Erro ao encontrar aparelho", error);
+    res.status(500).json({ error: "Erro interno ao encontrar aparelho" });
+  }
+};
+
 export const DeleteDevice = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -101,11 +123,6 @@ export const deviceSold = async (req: Request, res: Response) => {
         .findOneAndUpdate({ cpf: client }, { $set: clientResult[0] });
     }
 
-    console.log(sold[0].value);
-    console.log(soldValue);
-    console.log(expenses);
-    console.log(fees);
-
     await dbClient
       .db(DB_NAME)
       .collection("sold")
@@ -118,7 +135,7 @@ export const deviceSold = async (req: Request, res: Response) => {
         formPayment: formPayment,
         profit: soldValue - sold[0].value - expenses - fees,
         createdAt: sold[0].createdAt,
-        soldAt: new Date().toISOString(),
+        soldAt: formatterData,
         client: client,
       });
 
