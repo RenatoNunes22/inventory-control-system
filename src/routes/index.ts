@@ -10,6 +10,7 @@ import { checkToken } from "../middlewares/checkToken";
 import {
   AllDevice,
   CreateDevice,
+  DeleteDevice,
   GetDevice,
   UpdateDevice,
   deviceSold,
@@ -17,7 +18,9 @@ import {
 import {
   AllAccessories,
   CreateAccessories,
+  DeleteAccessories,
   GetAccessories,
+  UpdateAccessories,
   accessoriesSold,
 } from "../controllers/accessories.controller";
 
@@ -36,8 +39,11 @@ router.post("/users", CreateUser);
 router.post("/login", LonginUser);
 //Rotas delete
 router.delete("/deviceSold/:id", deviceSold); //nome do acessorio-nomedocliente (quantidade no corpo da requisição)
+router.delete("/devices/:id", DeleteDevice)
+router.delete("/accessories/:id", DeleteAccessories)
 //Route put
 router.put("/devices/:id", UpdateDevice);
+router.put("/accessories/:id", UpdateAccessories);
 router.put("/deviceSold/:id", deviceSold); //nome do acessorio-nomedocliente (quantidade no corpo da requisição)
 router.put("/accessoriesSold/:id", accessoriesSold); //nome do acessorio-nomedocliente (quantidade no corpo da requisição)
 router.put("/user/:id", UpadtaUser);

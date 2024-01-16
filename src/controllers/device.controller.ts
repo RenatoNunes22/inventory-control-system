@@ -90,6 +90,8 @@ export const DeleteDevice = async (req: Request, res: Response) => {
       .db(DB_NAME)
       .collection("devices")
       .deleteMany({ seriesNumber: id });
+      
+      res.send("Produto deletado com sucesso!")
   } catch (error) {
     console.error("Erro ao deletar aparelho", error);
     res.status(500).json({ error: "Erro interno ao deletar aparelho" });
@@ -180,7 +182,7 @@ export const UpdateDevice = async (req: Request, res: Response) => {
       .db(DB_NAME)
       .collection("devices")
       .findOneAndUpdate({ seriesNumber: id }, { $set: device });
-    res.status(200).send("Aparelho atualizado com sucesso!");
+    res.status(200).send("Produto atualizado com sucesso!");
   } catch (error) {
     console.error("Erro ao atualizar aparelho", error);
     res.status(500).json({ error: "Erro interno ao atualizar aparelho" });

@@ -66,6 +66,40 @@ export const GetAccessories = async (req: Request, res: Response) => {
   }
 };
 
+export const UpdateAccessories = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const {
+    name,
+    value,
+    type,
+    quantity,
+    status,
+    maxDiscountAmout,
+    createdAt,
+  } = req.body;
+
+  try {
+    const accessories = {
+      name,
+      value,
+      type,
+      quantity,
+      status,
+      maxDiscountAmout,
+      createdAt,
+    };
+
+    await dbClient
+      .db(DB_NAME)
+      .collection("accessories")
+      .findOneAndUpdate({ name: id }, { $set: accessories });
+    res.status(200).send("Produto atualizado com sucesso!");
+  } catch (error) {
+    console.error("Erro ao atualizar aparelho", error);
+    res.status(500).json({ error: "Erro interno ao atualizar aparelho" });
+  }
+}
+
 export const DeleteAccessories = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -73,7 +107,9 @@ export const DeleteAccessories = async (req: Request, res: Response) => {
     await dbClient
       .db(DB_NAME)
       .collection("accessories")
-      .deleteMany({ seriesNumber: id });
+      .deleteMany({ name: id });
+
+      res.send("Produto deletado com sucesso!")
   } catch (error) {
     console.error("Erro ao deletar acessorio", error);
     res.status(500).json({ error: "Erro interno ao deletar acessorio" });
@@ -150,7 +186,7 @@ export const accessoriesSold = async (req: Request, res: Response) => {
           .collection("accessories")
           .findOneAndUpdate({ name: accessoryName }, { $set: req.body });
 
-        res.status(200).send("Aparelho vendido com sucesso!");
+        res.status(200).send("Produto vendido com sucesso!");
       }
     }
   } catch (error) {
