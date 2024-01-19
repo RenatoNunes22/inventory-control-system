@@ -6,4 +6,5 @@ export interface User {
   role: number;
   telephone: string;
   password: string;
+  productSold: any[];
 }
