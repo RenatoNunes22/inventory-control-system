@@ -34,12 +34,13 @@ export const CreateUser = async (
       telephone,
       role,
       password: hashedPassword,
+      productSold: []
     };
     const token = jwt.sign({ user }, JWT_SECRET, {
       expiresIn: "1d",
     });
 
-    const userExists = await checkUser(email);
+    const userExists = await checkUser(cpf);
 
     if (userExists.length > 0) {
       res.send("Usuário já existe!");
@@ -47,7 +48,7 @@ export const CreateUser = async (
       dbClient
         .db(DB_NAME)
         .collection("users")
-        .insertOne({ ...user, token })
+        .insertOne({ ...user, token, createdAt: new Date().toISOString() })
         .then(() => {
           res.json("Usuário criado com sucesso!");
         })
@@ -58,6 +59,27 @@ export const CreateUser = async (
   } catch (error) {
     console.error("Erro ao criar usuário", error);
     res.status(500).json({ error: "Erro interno ao criar usuário" });
+  }
+};
+
+export const GetUsers = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const user = await dbClient
+      .db(DB_NAME)
+      .collection("users")
+      .aggregate([
+        {
+          $match: {
+            cpf: id,
+          },
+        },
+      ])
+      .toArray();
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Erro ao encontrar usuario", error);
+    res.status(500).json({ error: "Erro interno ao encontrar usuario" });
   }
 };
 
@@ -84,9 +106,26 @@ export const UpadtaUser = async (req: Request, res: Response) => {
       .db(DB_NAME)
       .collection("users")
       .findOneAndUpdate({ cpf: id }, { $set: req.body });
+      res.send("Usuário atualizado com sucesso!")
   } catch (error) {
     console.error("Erro ao atualizar usuário", error);
     res.status(500).json({ error: "Erro interno ao atualizar usuário" });
+  }
+};
+
+export const DeleteUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    await dbClient
+      .db(DB_NAME)
+      .collection("devices")
+      .deleteMany({ cpf: id });
+      
+      res.send("Usuario deletado com sucesso!")
+  } catch (error) {
+    console.error("Erro ao deletar aparelho", error);
+    res.status(500).json({ error: "Erro interno ao deletar aparelho" });
   }
 };
 
@@ -112,14 +151,14 @@ export const LonginUser = async (
   }
 };
 
-export const checkUser = async (email: string) => {
+export const checkUser = async (cpf: string) => {
   return await dbClient
     .db(DB_NAME)
     .collection("users")
     .aggregate([
       {
         $match: {
-          email: email,
+          cpf: cpf,
         },
       },
     ])
