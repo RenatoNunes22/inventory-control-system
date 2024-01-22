@@ -5,4 +5,5 @@ export interface Accessories {
   status: string;
   quantity: number;
   maxDiscountAmout: number;
+  
 }
