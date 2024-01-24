@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { dbClient } from "../db";
 import { User } from "../models/userModel";
+import { Login } from "../models/loginModel";
 
 dotenv.config();
 
@@ -40,7 +41,7 @@ export const CreateUser = async (
       expiresIn: "1d",
     });
 
-    const userExists = await checkUser(cpf);
+    const userExists = await checkUserCPF(cpf);
 
     if (userExists.length > 0) {
       res.send("Usuário já existe!");
@@ -59,6 +60,27 @@ export const CreateUser = async (
   } catch (error) {
     console.error("Erro ao criar usuário", error);
     res.status(500).json({ error: "Erro interno ao criar usuário" });
+  }
+};
+
+//Função para realizar o login
+export const LonginUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { email, password } = req.body as Login;
+    const user = await checkUserEmail(email);
+    await bcrypt.compare(password, user[0].password).then((result) => {
+      if (!result) {
+        res.status(401).json({ error: "Credenciais inválidas" });
+      } else {
+        res.status(200).json({ role: user[0].role, token: user[0].token });
+      }
+    });
+  } catch (error) {
+    console.error("Erro ao realizar login:", error);
+    res.status(500).json({ error: "Erro interno do servidor" });
   }
 };
 
@@ -129,29 +151,9 @@ export const DeleteUser = async (req: Request, res: Response) => {
   }
 };
 
-//Função para realizar o login
-export const LonginUser = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const { email, password } = req.body;
-    const user = await checkUser(email);
 
-    await bcrypt.compare(password, user[0].password).then((result) => {
-      if (!result) {
-        res.status(401).json({ error: "Credenciais inválidas" });
-      } else {
-        res.status(200).json({ role: user[0].role, token: user[0].token });
-      }
-    });
-  } catch (error) {
-    console.error("Erro ao realizar login:", error);
-    res.status(500).json({ error: "Erro interno do servidor" });
-  }
-};
 
-export const checkUser = async (cpf: string) => {
+export const checkUserCPF = async (cpf: string) => {
   return await dbClient
     .db(DB_NAME)
     .collection("users")
@@ -159,6 +161,20 @@ export const checkUser = async (cpf: string) => {
       {
         $match: {
           cpf: cpf,
+        },
+      },
+    ])
+    .toArray();
+};
+
+export const checkUserEmail = async (email: string) => {
+  return await dbClient
+    .db(DB_NAME)
+    .collection("users")
+    .aggregate([
+      {
+        $match: {
+          email: email,
         },
       },
     ])
