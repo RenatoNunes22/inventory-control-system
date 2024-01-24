@@ -24,10 +24,12 @@ import {
   accessoriesSold,
 } from "../controllers/accessories.controller";
 import { deviceSold } from "../controllers/sold.controller";
+import { initController } from "../controllers/init.controller";
 
 const router = express.Router();
 
 //Rotas get
+router.get("/", initController );
 router.get("/users", AllUser);
 router.get("/devices", AllDevice);
 router.get("/accessories", AllAccessories);
