@@ -70,12 +70,12 @@ export const LonginUser = async (
 ): Promise<void> => {
   try {
     const { email, password } = req.body as Login;
-    const user = await checkUserEmail(email);
+    const user= await checkUserEmail(email);
     await bcrypt.compare(password, user[0].password).then((result) => {
       if (!result) {
         res.status(401).json({ error: "Credenciais inválidas" });
       } else {
-        res.status(200).json({ role: user[0].role, token: user[0].token });
+        res.status(200).json({cpf: user[0].cpf, role: user[0].role, token: user[0].token });
       }
     });
   } catch (error) {

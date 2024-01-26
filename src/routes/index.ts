@@ -25,6 +25,7 @@ import {
 } from "../controllers/accessories.controller";
 import { deviceSold } from "../controllers/sold.controller";
 import { initController } from "../controllers/init.controller";
+import { AllClients, GetClient } from "../controllers/client.controller";
 
 const router = express.Router();
 
@@ -36,6 +37,8 @@ router.get("/accessories", AllAccessories);
 router.get("/accessories/:id", GetAccessories);
 router.get("/users/:id", GetUsers);
 router.get("/devices/:id", GetDevice);
+router.get("/clients", AllClients)
+router.get("/clients/:id", GetClient)
 //Rotas post
 router.post("/device", CreateDevice);
 router.post("/accessories", CreateAccessories);

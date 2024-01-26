@@ -58,6 +58,27 @@ export const DeleteClient = async (req: Request, res: Response) => {
   }
 };
 
+export const GetClient = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const user = await dbClient
+      .db(DB_NAME)
+      .collection("clients")
+      .aggregate([
+        {
+          $match: {
+            cpf: id,
+          },
+        },
+      ])
+      .toArray();
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Erro ao encontrar usuario", error);
+    res.status(500).json({ error: "Erro interno ao encontrar usuario" });
+  }
+};
+
 export const AllClients = async (
   req: Request,
   res: Response
