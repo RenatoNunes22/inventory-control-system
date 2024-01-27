@@ -16,7 +16,7 @@ export const CreateClients = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { email, cpf, name, dn, telephone, products } = req.body as Client;
+    const { email, cpf, name, dn, telephone, cep, state, city, street, neighborhood, number, complement,  products } = req.body as Client;
 
     const Clients = {
       email,
@@ -24,10 +24,17 @@ export const CreateClients = async (
       name,
       dn,
       telephone,
+      cep,
+      state,
+      city,
+      street,
+      neighborhood,
+      number,
+      complement,
       products,
     };
 
-    if (await existClient(cpf)) {
+    if ((await existClient(cpf)).length > 0) {
       res.send("Cliente já existe!");
     } else {
       dbClient

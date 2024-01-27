@@ -20,20 +20,11 @@ export const deviceSold = async (req: Request, res: Response) => {
     req.body as SoldDevice;
 
   try {
-
     const soldSeller = await dbClient
     .db(DB_NAME)
     .collection("users")
-    .aggregate([
-      {
-        $match: {
-          cpf: seller,
-        },
-      },
-    ])
-    .toArray();
-
-
+    .find({ cpf: seller }).toArray();
+   
     const sold = await dbClient
       .db(DB_NAME)
       .collection("devices")
@@ -46,7 +37,7 @@ export const deviceSold = async (req: Request, res: Response) => {
       ])
       .toArray();
 
-    if (await existClient(client)) {
+    if ((await existClient(client)).length > 0) {
       const clientResult = await existClient(client);
       clientResult[0].products.push(sold[0].name);
       await dbClient
@@ -65,7 +56,7 @@ export const deviceSold = async (req: Request, res: Response) => {
         expenses: expenses,
         fees: fees,
         formPayment: formPayment,
-        profit: soldValue - sold[0].value - expenses - fees,
+        profit: Number(soldValue) - Number(sold[0].value) - Number(expenses) - Number(fees),
         createdAt: sold[0].createdAt,
         soldAt: formatterData,
         client: client,
@@ -92,4 +83,39 @@ export const deviceSold = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Erro interno ao deletar aparelho vendido" });
   }
 };
+
+export const AllDeviceSold = async (req: Request, res: Response) => {
+  try {
+    const device = await dbClient
+      .db(DB_NAME)
+      .collection("sold")
+      .find()
+      .toArray();
+    res.status(200).json(device);
+  } catch (error) {
+    console.error("Erro ao listar vendas", error);
+    res.status(500).json({ error: "Erro interno ao listar vendas" });
+  }
+}
+
+export const GetDeviceSold = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const device = await dbClient
+      .db(DB_NAME)
+      .collection("sold")
+      .aggregate([
+        {
+          $match: {
+            seriesNumber: id,
+          },
+        },
+      ])
+      .toArray();
+    res.status(200).json(device);
+  } catch (error) {
+    console.error("Erro ao encontrar aparelho", error);
+    res.status(500).json({ error: "Erro interno ao encontrar aparelho" });
+  }
+}
 
