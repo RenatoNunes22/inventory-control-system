@@ -3,9 +3,10 @@ import express from "express";
 import {
   AllUser,
   CreateUser,
+  DeleteUser,
   GetUsers,
   LonginUser,
-  UpadtaUser,
+  UpdateUser,
 } from "../controllers/user.controller";
 import { checkToken } from "../middlewares/checkToken";
 import {
@@ -53,12 +54,12 @@ router.post("/deviceSold/:id", deviceSold);
 //Rotas delete
 router.delete("/deviceSold/:id", deviceSold); //nome do acessorio-nomedocliente (quantidade no corpo da requisição)
 router.delete("/devices/:id", DeleteDevice)
-router.delete("/users/:id", DeleteDevice)
+router.delete("/users/:id", DeleteUser)
 router.delete("/accessories/:id", DeleteAccessories)
 //Route put
 router.put("/devices/:id", UpdateDevice);
 router.put("/accessories/:id", UpdateAccessories);
 router.put("/accessoriesSold/:id", accessoriesSold); //nome do acessorio-nomedocliente (quantidade no corpo da requisição)
-router.put("/users/:id", UpadtaUser);
+router.put("/users/:id", UpdateUser);
 
 export default router;

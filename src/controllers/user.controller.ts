@@ -120,7 +120,7 @@ export const AllUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const UpadtaUser = async (req: Request, res: Response) => {
+export const UpdateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
@@ -141,13 +141,13 @@ export const DeleteUser = async (req: Request, res: Response) => {
   try {
     await dbClient
       .db(DB_NAME)
-      .collection("devices")
+      .collection("users")
       .deleteMany({ cpf: id });
       
-      res.send("Usuario deletado com sucesso!")
+      res.send("Usuário deletado com sucesso!")
   } catch (error) {
-    console.error("Erro ao deletar aparelho", error);
-    res.status(500).json({ error: "Erro interno ao deletar aparelho" });
+    console.error("Erro ao deletar Usuário", error);
+    res.status(500).json({ error: "Erro interno ao deletar Usuário" });
   }
 };
 
