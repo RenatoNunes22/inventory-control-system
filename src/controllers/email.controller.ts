@@ -131,9 +131,6 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
             </style>
           </head>
           <body>
-            <p style="padding-top: 1pt; text-indent: 0pt; text-align: right">
-              Página 1
-            </p>
             <p style="text-indent: 0pt; text-align: left"><br /></p>
             <table
               style="border-collapse: collapse; margin-left: 5.994pt"
@@ -374,7 +371,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                         display: flex;
                         justify-content: start;
                         flex-direction: column;
-                        gap: 2px;
+                        gap: 1px;
                         width: 50%;
                       "
                     >
@@ -388,13 +385,13 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                         class="s4"
                         style="padding-left: 5pt; text-indent: 0pt; text-align: left"
                       >
-                        Endereço: ${street}, Nº${number}
+                        Endereço: ${street ? street : '-'}, Nº ${number ? number : 'S/N'}
                       </p>
                       <p
                         class="s4"
                         style="padding-left: 5pt; text-indent: 0pt; text-align: left"
                       >
-                        Complemento:
+                        Complemento: ${complement ? complement : "-"}
                       </p>
                       <p
                         class="s4"
@@ -405,7 +402,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                           text-align: left;
                         "
                       >
-                        Bairro: ${neighborhood}
+                        Bairro: ${neighborhood ? neighborhood : '-'}
                       </p>
                       <p
                         class="s4"
@@ -416,7 +413,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                           text-align: left;
                         "
                       >
-                        CEP: ${cep}
+                        CEP: ${cep ? cep : '-'}
                       </p>
                     </div>
                     <div
@@ -424,7 +421,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                         display: flex;
                         justify-content: start;
                         flex-direction: column;
-                        gap: 2px;
+                        gap: 1px;
                       "
                     >
                       <p
@@ -449,7 +446,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                           padding-right: auto;
                         "
                       >
-                        Cidade: ${city}
+                        Cidade: ${city ? city : '-'}
                       </p>
                       <p
                         class="s4"
@@ -461,7 +458,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                           padding-right: auto;
                         "
                       >
-                        UF: ${state}
+                        UF: ${state ? state : '-'}
                       </p>
                       <p
                         class="s4"
@@ -472,7 +469,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                           text-align: left;
                         "
                       >
-                        Telefone: ${phone}
+                        Telefone: ${phone ? phone : '-'}
                       </p>
                       <p
                         class="s4"
@@ -1156,7 +1153,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                     class="s10"
                     style="padding-left: 17pt; text-indent: 0pt; text-align: left"
                   >
-                    R$${number}
+                    R$${value}
                   </p>
                 </td>
                 <td
@@ -1211,7 +1208,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                       text-align: center;
                     "
                   >
-                    R$${number}
+                    R$${value}
                   </p>
                 </td>
               </tr>
@@ -1251,7 +1248,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                       text-align: center;
                     "
                   >
-                    R$${number}
+                    R$${value}
                   </p>
                 </td>
               </tr>
@@ -1334,6 +1331,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
             from: "ESSENCE - IPHONE <renatonunes0011@hotmail.com>",
             to: email,
             subject: `Olá ${name}, obrigado por comprar conosco!`,
+            html: html,
             attachments: [{
                 filename: 'NOTA-ESSENCE-IPHONE.pdf',
                 path: "./NOTA_DE_PEDIDO.pdf",
