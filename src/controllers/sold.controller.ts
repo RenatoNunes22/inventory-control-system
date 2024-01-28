@@ -16,7 +16,7 @@ if (!DB_NAME) {
 
 export const deviceSold = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { soldValue, seriesNumber, expenses, fees, formPayment, client, seller } =
+  const { soldValue, seriesNumber, expenses, fees, formPayment, client, seller, gift } =
     req.body as SoldDevice;
 
   try {
@@ -60,6 +60,7 @@ export const deviceSold = async (req: Request, res: Response) => {
         createdAt: sold[0].createdAt,
         soldAt: formatterData,
         client: client,
+        gift: gift,
         seller: soldSeller[0].cpf
       });
 
@@ -70,12 +71,15 @@ export const deviceSold = async (req: Request, res: Response) => {
       .collection("users")
       .findOneAndUpdate({ cpf: seller }, { $set: { productSold:  [...newArraySold, sold[0]]}});
 
+    await dbClient
+      .db(DB_NAME)
+      .collection("devices")
+      .deleteMany({ seriesNumber: id });
 
-
-    // await dbClient
-    //   .db(DB_NAME)
-    //   .collection("devices")
-    //   .deleteMany({ seriesNumber: id });
+    await dbClient
+      .db(DB_NAME)
+      .collection("accessories")
+      .deleteMany({ name: gift });
 
     res.status(200).send("Aparelho vendido com sucesso!");
   } catch (error) {

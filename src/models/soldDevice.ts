@@ -7,4 +7,5 @@ export interface SoldDevice {
   formPayment: string;
   client: string;
   seller: string
+  gift?: string;
 }
