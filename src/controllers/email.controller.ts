@@ -7,22 +7,39 @@ import { formatterDataDocument } from "../utils/formatterDate";
 import { formatterDataHours } from "../utils/formatterHours";
 
 export const SendEmail = async (req: Request, res: Response): Promise<void> => {
-    const { email, name, value, phone, cpf, number, state, complement, sale, product, quantity, street, city, neighborhood, cep, formPayment  } = req.body;
+  const {
+    email,
+    name,
+    value,
+    phone,
+    cpf,
+    number,
+    state,
+    complement,
+    sale,
+    product,
+    quantity,
+    street,
+    city,
+    neighborhood,
+    cep,
+    formPayment,
+  } = req.body;
 
-    const date = formatterDataDocument(formatterData(new Date().toISOString()));
+  const date = formatterDataDocument(formatterData(new Date().toISOString()));
 
-    try{
-        const transporter = nodemailer.createTransport({
-        host: "smtp.office365.com",
-        port: 587,
-        secure: false,
-        auth: {
-            user: "renatonunes0011@hotmail.com",
-            pass: "Dias1999Bete2005" 
-        }})
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.office365.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: "renatonunes0011@hotmail.com",
+        pass: "Dias1999",
+      },
+    });
 
-
-        const html = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    const html = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt" lang="pt">
           <head>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -263,7 +280,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                         class="s4"
                         style="
                           padding-left: 5pt;
-        
+
                           text-indent: 0pt;
                           text-align: left;
                         "
@@ -385,7 +402,9 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                         class="s4"
                         style="padding-left: 5pt; text-indent: 0pt; text-align: left"
                       >
-                        Endereço: ${street ? street : '-'}, Nº ${number ? number : 'S/N'}
+                        Endereço: ${street ? street : "-"}, Nº ${
+      number ? number : "S/N"
+    }
                       </p>
                       <p
                         class="s4"
@@ -402,7 +421,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                           text-align: left;
                         "
                       >
-                        Bairro: ${neighborhood ? neighborhood : '-'}
+                        Bairro: ${neighborhood ? neighborhood : "-"}
                       </p>
                       <p
                         class="s4"
@@ -413,7 +432,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                           text-align: left;
                         "
                       >
-                        CEP: ${cep ? cep : '-'}
+                        CEP: ${cep ? cep : "-"}
                       </p>
                     </div>
                     <div
@@ -428,7 +447,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                         class="s4"
                         style="
                           padding-left: 5pt;
-        
+
                           text-indent: 0pt;
                           text-align: left;
                           padding-right: auto;
@@ -440,25 +459,25 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                         class="s4"
                         style="
                           padding-left: 5pt;
-        
+
                           text-indent: 0pt;
                           text-align: left;
                           padding-right: auto;
                         "
                       >
-                        Cidade: ${city ? city : '-'}
+                        Cidade: ${city ? city : "-"}
                       </p>
                       <p
                         class="s4"
                         style="
                           padding-left: 5pt;
-        
+
                           text-indent: 0pt;
                           text-align: left;
                           padding-right: auto;
                         "
                       >
-                        UF: ${state ? state : '-'}
+                        UF: ${state ? state : "-"}
                       </p>
                       <p
                         class="s4"
@@ -469,7 +488,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                           text-align: left;
                         "
                       >
-                        Telefone: ${phone ? phone : '-'}
+                        Telefone: ${phone ? phone : "-"}
                       </p>
                       <p
                         class="s4"
@@ -545,7 +564,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                         class="s6"
                         style="
                           padding-left: 5pt;
-        
+
                           text-indent: 0pt;
                           text-align: left;
                         "
@@ -556,7 +575,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                         class="s6"
                         style="
                           padding-left: 5pt;
-        
+
                           text-indent: 0pt;
                           text-align: left;
                         "
@@ -576,7 +595,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                         class="s6"
                         style="
                           padding-left: 5pt;
-        
+
                           text-indent: 0pt;
                           text-align: left;
                         "
@@ -587,7 +606,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                         class="s6"
                         style="
                           padding-left: 5pt;
-        
+
                           text-indent: 0pt;
                           text-align: left;
                         "
@@ -598,7 +617,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                         class="s6"
                         style="
                           padding-left: 5pt;
-        
+
                           text-indent: 0pt;
                           text-align: left;
                           padding-bottom: 2px;
@@ -638,7 +657,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                       class="s6"
                       style="
                         padding-left: 5pt;
-        
+
                         text-indent: 0pt;
                         text-align: left;
                       "
@@ -649,7 +668,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                       class="s6"
                       style="
                         padding-left: 5pt;
-        
+
                         text-indent: 0pt;
                         text-align: left;
                       "
@@ -720,7 +739,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                       class="s7"
                       style="
                         padding-left: 5pt;
-        
+
                         text-indent: 0pt;
                         text-align: left;
                       "
@@ -731,12 +750,14 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
                       class="s7"
                       style="
                         padding-left: 5pt;
-        
+
                         text-indent: 0pt;
                         text-align: left;
                       "
                     >
-                      Hora: ${formatterDataHours(formatterData(new Date().toISOString()))}
+                      Hora: ${formatterDataHours(
+                        formatterData(new Date().toISOString())
+                      )}
                     </p>
                   </div>
                 </td>
@@ -1312,44 +1333,45 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
             </table>
           </body>
         </html>
-        
+
         `;
 
+    pdf
+      .create(html, {
+        type: "pdf",
+        format: "A4",
+        orientation: "portrait",
+      })
+      .toFile("./NOTA_DE_PEDIDO.pdf", function (err, res) {
+        if (err) return console.log(err);
+        console.log(res);
+      });
 
-    
-        pdf.create(html, {
-            type: 'pdf',
-            format: 'A4',
-            orientation: 'portrait',
-          }).toFile('./NOTA_DE_PEDIDO.pdf', function(err, res) {
-            if (err) return console.log(err);
-            console.log(res);
-          })
-
-
-        transporter.sendMail({
-            from: "ESSENCE - IPHONE <renatonunes0011@hotmail.com>",
-            to: email,
-            subject: `Olá ${name}, obrigado por comprar conosco!`,
-            html: html,
-            attachments: [{
-                filename: 'NOTA-ESSENCE-IPHONE.pdf',
-                path: "./NOTA_DE_PEDIDO.pdf",
-                contentType: 'application/pdf'
-              }],
-        
-        }).then(() => {
-            res.status(200).send({ message: "Email enviado com sucesso!" })
-            fs.unlink('./NOTA_DE_PEDIDO.pdf', (err) => {
-                if (err) {
-                  console.error('Erro ao excluir o arquivo:', err);
-                  return;
-                }
-                console.log('Arquivo excluído com sucesso!');
-              })
-        })
-    } catch (error) {
-        console.log(error)
-    }
-   
-}
+    transporter
+      .sendMail({
+        from: "ESSENCE - IPHONE <renatonunes0011@hotmail.com>",
+        to: email,
+        subject: `Olá ${name}, obrigado por comprar conosco!`,
+        html: html,
+        attachments: [
+          {
+            filename: "NOTA-ESSENCE-IPHONE.pdf",
+            path: "./NOTA_DE_PEDIDO.pdf",
+            contentType: "application/pdf",
+          },
+        ],
+      })
+      .then(() => {
+        res.status(200).send({ message: "Email enviado com sucesso!" });
+        fs.unlink("./NOTA_DE_PEDIDO.pdf", (err) => {
+          if (err) {
+            console.error("Erro ao excluir o arquivo:", err);
+            return;
+          }
+          console.log("Arquivo excluído com sucesso!");
+        });
+      });
+  } catch (error) {
+    console.log(error);
+  }
+};

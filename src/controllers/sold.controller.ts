@@ -16,15 +16,24 @@ if (!DB_NAME) {
 
 export const deviceSold = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { soldValue, seriesNumber, expenses, fees, formPayment, client, seller, gift } =
-    req.body as SoldDevice;
+  const {
+    soldValue,
+    seriesNumber,
+    expenses,
+    fees,
+    formPayment,
+    client,
+    seller,
+    gift,
+  } = req.body as SoldDevice;
 
   try {
     const soldSeller = await dbClient
-    .db(DB_NAME)
-    .collection("users")
-    .find({ cpf: seller }).toArray();
-   
+      .db(DB_NAME)
+      .collection("users")
+      .find({ cpf: seller })
+      .toArray();
+
     const sold = await dbClient
       .db(DB_NAME)
       .collection("devices")
@@ -56,30 +65,39 @@ export const deviceSold = async (req: Request, res: Response) => {
         expenses: expenses,
         fees: fees,
         formPayment: formPayment,
-        profit: Number(soldValue) - Number(sold[0].value) - Number(expenses) - Number(fees),
+        profit:
+          Number(soldValue) -
+          Number(sold[0].value) -
+          Number(expenses) -
+          Number(fees),
         createdAt: sold[0].createdAt,
         soldAt: formatterData,
         client: client,
         gift: gift,
-        seller: soldSeller[0].cpf
+        seller: soldSeller[0].cpf,
       });
 
-      var newArraySold: any[] = soldSeller[0].productSold
+    var newArraySold: any[] = soldSeller[0].productSold;
 
     await dbClient
       .db(DB_NAME)
       .collection("users")
-      .findOneAndUpdate({ cpf: seller }, { $set: { productSold:  [...newArraySold, sold[0]]}});
+      .findOneAndUpdate(
+        { cpf: seller },
+        { $set: { productSold: [...newArraySold, sold[0]] } }
+      );
 
     await dbClient
       .db(DB_NAME)
       .collection("devices")
       .deleteMany({ seriesNumber: id });
 
-    await dbClient
-      .db(DB_NAME)
-      .collection("accessories")
-      .deleteMany({ name: gift });
+    gift?.map(async (gift) => {
+      await dbClient
+        .db(DB_NAME)
+        .collection("accessories")
+        .deleteMany({ name: gift });
+    });
 
     res.status(200).send("Aparelho vendido com sucesso!");
   } catch (error) {
@@ -100,7 +118,7 @@ export const AllDeviceSold = async (req: Request, res: Response) => {
     console.error("Erro ao listar vendas", error);
     res.status(500).json({ error: "Erro interno ao listar vendas" });
   }
-}
+};
 
 export const GetDeviceSold = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -121,5 +139,4 @@ export const GetDeviceSold = async (req: Request, res: Response) => {
     console.error("Erro ao encontrar aparelho", error);
     res.status(500).json({ error: "Erro interno ao encontrar aparelho" });
   }
-}
-
+};

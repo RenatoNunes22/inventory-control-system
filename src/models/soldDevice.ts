@@ -4,8 +4,8 @@ export interface SoldDevice {
   seriesNumber: string;
   expenses: number;
   fees: number;
-  formPayment: string;
+  formPayment: string[];
   client: string;
-  seller: string
-  gift?: string;
+  seller: string;
+  gift?: string[];
 }
