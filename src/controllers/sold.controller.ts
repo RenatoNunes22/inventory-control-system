@@ -93,10 +93,25 @@ export const deviceSold = async (req: Request, res: Response) => {
       .deleteMany({ seriesNumber: id });
 
     gift?.map(async (gift) => {
-      await dbClient
+      const accessorie = await dbClient
         .db(DB_NAME)
         .collection("accessories")
-        .deleteMany({ name: gift });
+        .findOne({ name: gift });
+
+      if (Number(accessorie?.quantity) > 1) {
+        await dbClient
+          .db(DB_NAME)
+          .collection("accessories")
+          .findOneAndUpdate(
+            { name: gift },
+            { $set: { quantity: Number(accessorie?.quantity) - 1 } }
+          );
+      } else {
+        await dbClient
+          .db(DB_NAME)
+          .collection("accessories")
+          .deleteMany({ name: gift });
+      }
     });
 
     res.status(200).send("Aparelho vendido com sucesso!");

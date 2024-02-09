@@ -34,8 +34,8 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
       port: 587,
       secure: false,
       auth: {
-        user: "renatonunes0011@hotmail.com",
-        pass: "Dias1999",
+        user: "essence-iphone@outlook.com",
+        pass: "essence.iphonefd2024",
       },
     });
 
@@ -1349,7 +1349,7 @@ export const SendEmail = async (req: Request, res: Response): Promise<void> => {
 
     transporter
       .sendMail({
-        from: "ESSENCE - IPHONE <renatonunes0011@hotmail.com>",
+        from: "ESSENCE - IPHONE <essence-iphone@outlook.com>",
         to: email,
         subject: `Olá ${name}, obrigado por comprar conosco!`,
         html: html,
