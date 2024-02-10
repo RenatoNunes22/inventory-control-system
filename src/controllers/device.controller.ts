@@ -104,7 +104,8 @@ export const UpdateDevice = async (req: Request, res: Response) => {
   const { id } = req.params;
   const {
     name,
-    value,
+    inputValue,
+    outputValue,
     type,
     seriesNumber,
     status,
@@ -116,7 +117,8 @@ export const UpdateDevice = async (req: Request, res: Response) => {
   try {
     const device = {
       name,
-      value,
+      inputValue,
+      outputValue,
       type,
       seriesNumber,
       status,
