@@ -1,6 +1,7 @@
 export interface Device {
   name: string;
-  value: number;
+  inputValue: number;
+  outputValue: number;
   type: string;
   seriesNumber: string;
   status: string;

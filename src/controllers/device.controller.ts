@@ -21,7 +21,8 @@ export const CreateDevice = async (
   try {
     const {
       name,
-      value,
+      inputValue,
+      outputValue,
       type,
       seriesNumber,
       status,
@@ -31,7 +32,8 @@ export const CreateDevice = async (
 
     const device = {
       name,
-      value,
+      inputValue,
+      outputValue,
       type,
       seriesNumber,
       status,
@@ -90,14 +92,13 @@ export const DeleteDevice = async (req: Request, res: Response) => {
       .db(DB_NAME)
       .collection("devices")
       .deleteMany({ seriesNumber: id });
-      
-      res.send("Produto deletado com sucesso!")
+
+    res.send("Produto deletado com sucesso!");
   } catch (error) {
     console.error("Erro ao deletar aparelho", error);
     res.status(500).json({ error: "Erro interno ao deletar aparelho" });
   }
 };
-
 
 export const UpdateDevice = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -133,7 +134,7 @@ export const UpdateDevice = async (req: Request, res: Response) => {
     console.error("Erro ao atualizar aparelho", error);
     res.status(500).json({ error: "Erro interno ao atualizar aparelho" });
   }
-}
+};
 
 export const AllDevice = async (req: Request, res: Response): Promise<void> => {
   try {

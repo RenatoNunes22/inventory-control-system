@@ -55,6 +55,17 @@ export const deviceSold = async (req: Request, res: Response) => {
         .findOneAndUpdate({ cpf: client }, { $set: clientResult[0] });
     }
 
+    const promises = gift?.map(async (acc) => {
+      const accessories = await dbClient
+        .db(DB_NAME)
+        .collection("accessories")
+        .findOne({ name: acc });
+      return accessories ? accessories.value : 0;
+    });
+
+    const total = await Promise.all(promises!);
+    const giftsValue = total.reduce((total, valor) => total + valor, 0);
+
     await dbClient
       .db(DB_NAME)
       .collection("sold")
@@ -67,9 +78,10 @@ export const deviceSold = async (req: Request, res: Response) => {
         formPayment: formPayment,
         profit:
           Number(soldValue) -
-          Number(sold[0].value) -
+          Number(sold[0].inputValue) -
           Number(expenses) -
-          Number(fees),
+          Number(fees) -
+          Number(giftsValue),
         createdAt: sold[0].createdAt,
         soldAt: formatterData,
         client: client,
@@ -87,10 +99,10 @@ export const deviceSold = async (req: Request, res: Response) => {
         { $set: { productSold: [...newArraySold, sold[0]] } }
       );
 
-    await dbClient
-      .db(DB_NAME)
-      .collection("devices")
-      .deleteMany({ seriesNumber: id });
+    // await dbClient
+    //   .db(DB_NAME)
+    //   .collection("devices")
+    //   .deleteMany({ seriesNumber: id });
 
     gift?.map(async (gift) => {
       const accessorie = await dbClient
