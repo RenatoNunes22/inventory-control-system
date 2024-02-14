@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { dbClient } from "../db";
 import dotenv from "dotenv";
 import { Accessories } from "../models/acessoriesModel";
-import { CreateClients, existClient } from "./client.controller";
 
 dotenv.config();
 
@@ -17,12 +16,20 @@ export const CreateAccessories = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { name, value, type, status, quantity, maxDiscountAmout } =
-      req.body as Accessories;
+    const {
+      name,
+      inputValue,
+      outputValue,
+      type,
+      status,
+      quantity,
+      maxDiscountAmout,
+    } = req.body as Accessories;
 
     const Accessories = {
       name,
-      value,
+      inputValue,
+      outputValue,
       type,
       status,
       quantity,
@@ -68,13 +75,22 @@ export const GetAccessories = async (req: Request, res: Response) => {
 
 export const UpdateAccessories = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { name, value, type, quantity, status, maxDiscountAmout, createdAt } =
-    req.body;
+  const {
+    name,
+    inputValue,
+    outputValue,
+    type,
+    quantity,
+    status,
+    maxDiscountAmout,
+    createdAt,
+  } = req.body;
 
   try {
     const accessories = {
       name,
-      value,
+      inputValue,
+      outputValue,
       type,
       quantity,
       status,
@@ -110,79 +126,42 @@ export const DeleteAccessories = async (req: Request, res: Response) => {
 };
 
 export const accessoriesSold = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { name, value, type, status } = req.body as Accessories;
+  const { name, value, formPayment, quantity, type } = req.body;
 
   const Accessories = {
     name,
     value,
+    formPayment,
+    quantity,
     type,
-    status,
   };
 
-  const splitResult = id.split("-");
-
   try {
-    if (splitResult.length === 2) {
-      const accessoryName = splitResult[0];
-      const client = splitResult[1];
-
-      const sold = await dbClient
-        .db(DB_NAME)
-        .collection("accessories")
-        .aggregate([
-          {
-            $match: {
-              name: accessoryName,
-            },
+    const accessorie = await dbClient
+      .db(DB_NAME)
+      .collection("accessories")
+      .aggregate([
+        {
+          $match: {
+            name: name,
           },
-        ])
-        .toArray();
+        },
+      ])
+      .toArray();
 
-      const accessorie = await dbClient
-        .db(DB_NAME)
-        .collection("accessories")
-        .aggregate([
-          {
-            $match: {
-              name: accessoryName,
-            },
-          },
-        ])
-        .toArray();
-
-      if (sold.length === 0) {
-        res.status(200).send("Acessorio não encontrado!");
-      } else {
-        if (await existClient(client)) {
-          const clientResult = await existClient(client);
-          clientResult[0].products.push(accessoryName);
-
-          await dbClient
-            .db(DB_NAME)
-            .collection("clients")
-            .findOneAndUpdate({ cpf: client }, { $set: clientResult[0] });
-        }
-
+    if (accessorie.length === 0) {
+      res.status(200).send("Acessorio não encontrado!");
+    } else {
+      if (Number(accessorie[0].quantity) >= quantity) {
         await dbClient
           .db(DB_NAME)
-          .collection("sold")
-          .insertOne({
-            ...Accessories,
-            createdAt: accessorie[0].createdAt,
-            soldAt: new Date().toISOString(),
-            client: client,
-          });
+          .collection("accessories")
+          .findOneAndUpdate(
+            { name: accessorie[0].name },
+            { $set: { quantity: Number(accessorie[0].quantity) - quantity } }
+          );
 
-        if (Number(accessorie[0].quantity) > 1) {
-          await dbClient
-            .db(DB_NAME)
-            .collection("accessories")
-            .findOneAndUpdate(
-              { name: accessorie[0].name },
-              { $set: { quantity: Number(accessorie[0].quantity) - 1 } }
-            );
-        } else {
+        if (accessorie[0].quantity - quantity === 0) {
           await dbClient
             .db(DB_NAME)
             .collection("accessories")
@@ -191,11 +170,18 @@ export const accessoriesSold = async (req: Request, res: Response) => {
 
         await dbClient
           .db(DB_NAME)
-          .collection("accessories")
-          .findOneAndUpdate({ name: accessoryName }, { $set: req.body });
-
-        res.status(200).send("Produto vendido com sucesso!");
+          .collection("sold")
+          .insertOne({
+            ...Accessories,
+            profit: value - accessorie[0].inputValue * quantity,
+            createdAt: accessorie[0].createdAt,
+            soldAt: new Date().toISOString(),
+          });
+      } else {
+        res.status(200).send("Quantidade insuficiente!");
       }
+
+      res.status(200).send("Acessório vendido com sucesso!");
     }
   } catch (error) {
     console.error("Erro ao deletar aparelho vendido", error);

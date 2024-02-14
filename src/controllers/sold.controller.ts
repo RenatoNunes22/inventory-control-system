@@ -99,10 +99,10 @@ export const deviceSold = async (req: Request, res: Response) => {
         { $set: { productSold: [...newArraySold, sold[0]] } }
       );
 
-    // await dbClient
-    //   .db(DB_NAME)
-    //   .collection("devices")
-    //   .deleteMany({ seriesNumber: id });
+    await dbClient
+      .db(DB_NAME)
+      .collection("devices")
+      .deleteMany({ seriesNumber: id });
 
     gift?.map(async (gift) => {
       const accessorie = await dbClient

@@ -55,6 +55,7 @@ router.post("/accessories", CreateAccessories);
 router.post("/users", CreateUser);
 router.post("/login", LonginUser);
 router.post("/deviceSold/:id", deviceSold);
+router.post("/accessoriesSold/", accessoriesSold);
 //Rotas delete
 router.delete("/deviceSold/:id", deviceSold);
 router.delete("/devices/:id", DeleteDevice);
@@ -63,7 +64,6 @@ router.delete("/accessories/:id", DeleteAccessories);
 //Route put
 router.put("/devices/:id", UpdateDevice);
 router.put("/accessories/:id", UpdateAccessories);
-router.put("/accessoriesSold/:id", accessoriesSold);
 router.put("/users/:id", UpdateUser);
 
 export default router;
