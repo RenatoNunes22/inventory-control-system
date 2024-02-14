@@ -68,15 +68,8 @@ export const GetAccessories = async (req: Request, res: Response) => {
 
 export const UpdateAccessories = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const {
-    name,
-    value,
-    type,
-    quantity,
-    status,
-    maxDiscountAmout,
-    createdAt,
-  } = req.body;
+  const { name, value, type, quantity, status, maxDiscountAmout, createdAt } =
+    req.body;
 
   try {
     const accessories = {
@@ -98,7 +91,7 @@ export const UpdateAccessories = async (req: Request, res: Response) => {
     console.error("Erro ao atualizar aparelho", error);
     res.status(500).json({ error: "Erro interno ao atualizar aparelho" });
   }
-}
+};
 
 export const DeleteAccessories = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -109,7 +102,7 @@ export const DeleteAccessories = async (req: Request, res: Response) => {
       .collection("accessories")
       .deleteMany({ name: id });
 
-      res.send("Produto deletado com sucesso!")
+    res.send("Produto deletado com sucesso!");
   } catch (error) {
     console.error("Erro ao deletar acessorio", error);
     res.status(500).json({ error: "Erro interno ao deletar acessorio" });
@@ -146,7 +139,7 @@ export const accessoriesSold = async (req: Request, res: Response) => {
         ])
         .toArray();
 
-      const cretedAt = await dbClient
+      const accessorie = await dbClient
         .db(DB_NAME)
         .collection("accessories")
         .aggregate([
@@ -176,10 +169,25 @@ export const accessoriesSold = async (req: Request, res: Response) => {
           .collection("sold")
           .insertOne({
             ...Accessories,
-            createdAt: cretedAt[0].createdAt,
+            createdAt: accessorie[0].createdAt,
             soldAt: new Date().toISOString(),
             client: client,
           });
+
+        if (Number(accessorie[0].quantity) > 1) {
+          await dbClient
+            .db(DB_NAME)
+            .collection("accessories")
+            .findOneAndUpdate(
+              { name: accessorie[0].name },
+              { $set: { quantity: Number(accessorie[0].quantity) - 1 } }
+            );
+        } else {
+          await dbClient
+            .db(DB_NAME)
+            .collection("accessories")
+            .deleteMany({ name: accessorie[0].name });
+        }
 
         await dbClient
           .db(DB_NAME)
