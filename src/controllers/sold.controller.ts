@@ -60,7 +60,7 @@ export const deviceSold = async (req: Request, res: Response) => {
         .db(DB_NAME)
         .collection("accessories")
         .findOne({ name: acc });
-      return accessories ? accessories.value : 0;
+      return accessories ? accessories.inputValue : 0;
     });
 
     const total = await Promise.all(promises!);
