@@ -147,6 +147,31 @@ export const AllDeviceSold = async (req: Request, res: Response) => {
   }
 };
 
+export const SoldByDate = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const device = await dbClient
+      .db(DB_NAME)
+      .collection("sold")
+      .aggregate([
+        {
+          $match: {
+            createdAt: {
+              $gte: `${id}T00:00:00.000Z`,
+              $lt: `${id}T23:59:59.999Z`,
+            },
+          },
+        },
+      ])
+      .toArray();
+
+    res.status(200).json(device);
+  } catch (error) {
+    console.error("Erro ao listar vendas", error);
+    res.status(500).json({ error: "Erro interno ao listar vendas" });
+  }
+};
+
 export const GetDeviceSold = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {

@@ -24,7 +24,11 @@ import {
   UpdateAccessories,
   accessoriesSold,
 } from "../controllers/accessories.controller";
-import { deviceSold, AllDeviceSold } from "../controllers/sold.controller";
+import {
+  deviceSold,
+  AllDeviceSold,
+  SoldByDate,
+} from "../controllers/sold.controller";
 import { initController } from "../controllers/init.controller";
 import {
   AllClients,
@@ -32,6 +36,7 @@ import {
   GetClient,
 } from "../controllers/client.controller";
 import { SendEmail } from "../controllers/email.controller";
+import { profit } from "../controllers/profit.controller";
 
 const router = express.Router();
 
@@ -47,6 +52,8 @@ router.get("/accessories/:id", GetAccessories);
 router.get("/users/:id", GetUsers);
 router.get("/devices/:id", GetDevice);
 router.get("/clients/:id", GetClient);
+router.get("/profit/:id", profit);
+router.get("/soldByDate/:id", SoldByDate);
 //Rotas post
 router.post("/clients", CreateClients);
 router.post("/sendEmail", SendEmail);

@@ -126,11 +126,11 @@ export const DeleteAccessories = async (req: Request, res: Response) => {
 };
 
 export const accessoriesSold = async (req: Request, res: Response) => {
-  const { name, value, formPayment, quantity, type } = req.body;
+  const { name, soldValue, formPayment, quantity, type } = req.body;
 
   const Accessories = {
     name,
-    value,
+    soldValue,
     formPayment,
     quantity,
     type,
@@ -173,7 +173,7 @@ export const accessoriesSold = async (req: Request, res: Response) => {
           .collection("sold")
           .insertOne({
             ...Accessories,
-            profit: value - accessorie[0].inputValue * quantity,
+            profit: soldValue - accessorie[0].inputValue * quantity,
             createdAt: accessorie[0].createdAt,
             soldAt: new Date().toISOString(),
           });
