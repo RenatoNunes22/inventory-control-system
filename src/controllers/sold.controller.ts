@@ -83,7 +83,7 @@ export const deviceSold = async (req: Request, res: Response) => {
           Number(fees) -
           Number(giftsValue),
         createdAt: sold[0].createdAt,
-        soldAt: formatterData,
+        soldAt: formatterData(new Date().toISOString()),
         client: client,
         gift: gift,
         seller: soldSeller[0].cpf,
@@ -156,7 +156,7 @@ export const SoldByDate = async (req: Request, res: Response) => {
       .aggregate([
         {
           $match: {
-            createdAt: {
+            soldAt: {
               $gte: `${id}T00:00:00.000Z`,
               $lt: `${id}T23:59:59.999Z`,
             },

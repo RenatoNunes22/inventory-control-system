@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { dbClient } from "../db";
 import dotenv from "dotenv";
 import { Accessories } from "../models/acessoriesModel";
+import { formatterData } from "../utils/formatterData";
 
 dotenv.config();
 
@@ -175,7 +176,7 @@ export const accessoriesSold = async (req: Request, res: Response) => {
             ...Accessories,
             profit: soldValue - accessorie[0].inputValue * quantity,
             createdAt: accessorie[0].createdAt,
-            soldAt: new Date().toISOString(),
+            soldAt: formatterData(new Date().toISOString()),
           });
       } else {
         res.status(200).send("Quantidade insuficiente!");

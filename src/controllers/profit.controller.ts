@@ -20,7 +20,7 @@ export const profit = async (req: Request, res: Response) => {
       .aggregate([
         {
           $match: {
-            createdAt: {
+            soldAt: {
               $gte: `${id}T00:00:00.000Z`,
               $lt: `${id}T23:59:59.999Z`,
             },
