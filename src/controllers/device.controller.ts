@@ -63,6 +63,31 @@ export const CreateDevice = async (
   }
 };
 
+export const DeviceByDate = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const device = await dbClient
+      .db(DB_NAME)
+      .collection("device")
+      .aggregate([
+        {
+          $match: {
+            createdAt: {
+              $gte: `${id}T00:00:00.000Z`,
+              $lt: `${id}T23:59:59.999Z`,
+            },
+          },
+        },
+      ])
+      .toArray();
+
+    res.status(200).json(device);
+  } catch (error) {
+    console.error("Erro ao listar aparelhos", error);
+    res.status(500).json({ error: "Erro interno ao listar aparelhos" });
+  }
+};
+
 export const GetDevice = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
