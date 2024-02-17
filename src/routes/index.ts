@@ -15,6 +15,7 @@ import {
   DeleteDevice,
   GetDevice,
   UpdateDevice,
+  filterDevice,
 } from "../controllers/device.controller";
 import {
   AllAccessories,
@@ -23,6 +24,7 @@ import {
   GetAccessories,
   UpdateAccessories,
   accessoriesSold,
+  filterAccessories,
 } from "../controllers/accessories.controller";
 import {
   deviceSold,
@@ -54,6 +56,8 @@ router.get("/devices/:id", GetDevice);
 router.get("/clients/:id", GetClient);
 router.get("/profit/:id", profit);
 router.get("/soldByDate/:id", SoldByDate);
+router.get("/filterDevice/data", filterDevice);
+router.get("/filterAccessories/data", filterAccessories);
 //Rotas post
 router.post("/clients", CreateClients);
 router.post("/sendEmail", SendEmail);

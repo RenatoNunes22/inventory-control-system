@@ -5,6 +5,7 @@ import { Device } from "../models/deviceModel";
 import { existClient } from "./client.controller";
 import { SoldDevice } from "../models/soldDevice";
 import { formatterData } from "../utils/formatterData";
+import { MatchStage } from "../models/matchStage";
 
 dotenv.config();
 
@@ -174,6 +175,47 @@ export const AllDevice = async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     console.error("Erro ao buscar aparelhos", error);
     res.status(500).json({ error: "Erro interno ao buscar aparelhos" });
+  }
+};
+
+export const filterDevice = async (req: Request, res: Response) => {
+  const name = req.query.name;
+  const numberSerie = req.query.numberSerie;
+  const date = req.query.date;
+
+  console.log(name, numberSerie, date);
+
+  const pipeline = [];
+
+  if (name !== undefined || numberSerie !== undefined || date !== undefined) {
+    const matchStage: MatchStage = {};
+
+    if (name !== undefined) {
+      matchStage["name"] = name;
+    }
+
+    if (numberSerie !== undefined) {
+      matchStage["seriesNumber"] = numberSerie;
+    }
+
+    if (date !== undefined) {
+      matchStage["createdAt"] = { $regex: date };
+    }
+
+    pipeline.push({ $match: matchStage });
+  }
+
+  try {
+    const device = await dbClient
+      .db(DB_NAME)
+      .collection("devices")
+      .aggregate(pipeline)
+      .toArray();
+
+    res.status(200).json(device);
+  } catch (error) {
+    console.error("Erro ao encontrar aparelho", error);
+    res.status(500).json({ error: "Erro interno ao encontrar aparelho" });
   }
 };
 

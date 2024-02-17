@@ -3,6 +3,7 @@ import { dbClient } from "../db";
 import dotenv from "dotenv";
 import { Accessories } from "../models/acessoriesModel";
 import { formatterData } from "../utils/formatterData";
+import { MatchStage } from "../models/matchStage";
 
 dotenv.config();
 
@@ -187,6 +188,40 @@ export const accessoriesSold = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Erro ao deletar aparelho vendido", error);
     res.status(500).json({ error: "Erro interno ao deletar aparelho vendido" });
+  }
+};
+
+export const filterAccessories = async (req: Request, res: Response) => {
+  const name = req.query.name;
+  const date = req.query.date;
+
+  const pipeline = [];
+
+  if (name !== undefined || date !== undefined) {
+    const matchStage: MatchStage = {};
+
+    if (name !== undefined) {
+      matchStage["name"] = name;
+    }
+
+    if (date !== undefined) {
+      matchStage["createdAt"] = { $regex: date };
+    }
+
+    pipeline.push({ $match: matchStage });
+  }
+
+  try {
+    const accessories = await dbClient
+      .db(DB_NAME)
+      .collection("accessories")
+      .aggregate(pipeline)
+      .toArray();
+
+    res.status(200).json(accessories);
+  } catch (error) {
+    console.error("Erro ao encontrar aparelho", error);
+    res.status(500).json({ error: "Erro interno ao encontrar aparelho" });
   }
 };
 
