@@ -24,6 +24,8 @@ export const CreateDevice = async (
       name,
       inputValue,
       outputValue,
+      color,
+      supplier,
       type,
       seriesNumber,
       status,
@@ -35,6 +37,8 @@ export const CreateDevice = async (
       name,
       inputValue,
       outputValue,
+      color,
+      supplier,
       type,
       seriesNumber,
       status,
@@ -50,7 +54,10 @@ export const CreateDevice = async (
       dbClient
         .db(DB_NAME)
         .collection("devices")
-        .insertOne({ ...device, createdAt: new Date().toISOString() })
+        .insertOne({
+          ...device,
+          createdAt: formatterData(new Date().toISOString()),
+        })
         .then(() => {
           res.json("Produto inserido com sucesso!");
         })
@@ -132,6 +139,8 @@ export const UpdateDevice = async (req: Request, res: Response) => {
     name,
     inputValue,
     outputValue,
+    color,
+    supplier,
     type,
     seriesNumber,
     status,
@@ -145,6 +154,8 @@ export const UpdateDevice = async (req: Request, res: Response) => {
       name,
       inputValue,
       outputValue,
+      color,
+      supplier,
       type,
       seriesNumber,
       status,
@@ -182,8 +193,6 @@ export const filterDevice = async (req: Request, res: Response) => {
   const name = req.query.name;
   const numberSerie = req.query.numberSerie;
   const date = req.query.date;
-
-  console.log(name, numberSerie, date);
 
   const pipeline = [];
 
